@@ -78,6 +78,16 @@ router.post('/notes', (req, res, next) => {
   });
 });
 
+router.delete('/notes/:id', (req,res,next) => {
+  const id = req.params.id;
+  notes.delete(id, (err, res_note) => {
+    if(err){
+      return next(err);
+    }
+    res.send('delete success');
+  });
+});
+
 
 
 

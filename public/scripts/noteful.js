@@ -20,6 +20,7 @@ const noteful = (function () {
     const listItems = list.map(item => `
     <li data-id="${item.id}" class="js-note-element ${currentNote.id === item.id ? 'active' : ''}">
       <a href="#" class="name js-note-show-link">${item.title}</a>
+      <button class="removeBtn js-note-delete-button">X</button>
     </li>`);
     return listItems.join('');
   }
@@ -111,12 +112,25 @@ const noteful = (function () {
     });
   }
 
+  function handleDeleteItem(){
+    $('.removeBtn').on('click', event => {
+      const id = store.currentNote.id;
+      api.delete(id, (res) => {
+        console.log('delete success');
+        store.notes = store.notes.filter( note => note.id !== id);
+        store.currentNote = false;
+        render();
+      });
+    });
+  }
+
 
   function bindEventListeners() {
     handleNoteItemClick();
     handleNoteSearchSubmit();
     handleNoteFormSubmit();
     handleNoteFormSubmit();
+    handleDeleteItem();
   }
 
   // This object contains the only exposed methods from this module:
