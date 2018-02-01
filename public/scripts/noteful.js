@@ -42,7 +42,7 @@ const noteful = (function () {
 
       const noteId = getNoteIdFromElement(event.currentTarget);
 
-      api.details(noteId, response => {
+      api.details(noteId).then(response => {
         store.currentNote = response;
         render();
       });
@@ -57,7 +57,7 @@ const noteful = (function () {
       const searchTerm = $('.js-note-search-entry').val();
       store.currentSearchTerm =  searchTerm ? { searchTerm } : {};
       
-      api.search(store.currentSearchTerm, response => {
+      api.search(store.currentSearchTerm).then(response => {
         store.notes = response;
         render();
       });
@@ -78,10 +78,10 @@ const noteful = (function () {
 
       if (store.currentNote.id) {
 
-        api.update(store.currentNote.id, noteObj, updateResponse => {
+        api.update(store.currentNote.id, noteObj).then(updateResponse => {
           store.currentNote = updateResponse;
 
-          api.search(store.currentSearchTerm, updateResponse => {
+          api.search(store.currentSearchTerm).then(updateResponse => {
             store.notes = updateResponse;
             render();
           });
@@ -90,10 +90,10 @@ const noteful = (function () {
 
       } else {
 
-        api.create(noteObj, updateResponse => {
+        api.create(noteObj).then(updateResponse => {
           store.currentNote = updateResponse;
 
-          api.search(store.currentSearchTerm, updateResponse => {
+          api.search(store.currentSearchTerm).then(updateResponse => {
             store.notes = updateResponse;
             render();
           });
@@ -113,13 +113,16 @@ const noteful = (function () {
   }
 
   function handleDeleteItem(){
-    $('.removeBtn').on('click'ç, event => {
+    $('.js-notes-list').on('click','.removeBtn' ,event => {
       const id = store.currentNote.id;
       api.delete(id, (res) => {
         console.log('delete success');
         store.notes = store.notes.filter( note => note.id !== id);
         store.currentNote = false;
-        render();
+        api.search(store.currentSearchTerm).then(updateResponse => {
+          store.notes = updateResponse;
+          render();
+      });
       });
     });
   }
