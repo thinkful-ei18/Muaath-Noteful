@@ -113,7 +113,7 @@ const noteful = (function () {
   }
 
   function handleDeleteItem(){
-    $('.removeBtn').on('click', event => {
+    $('.removeBtn').on('click'ç, event => {
       const id = store.currentNote.id;
       api.delete(id, (res) => {
         console.log('delete success');
