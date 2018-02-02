@@ -112,18 +112,18 @@ const noteful = (function () {
     });
   }
 
-  function handleDeleteItem(){
-    $('.js-notes-list').on('click','.removeBtn' ,event => {
-      const id = store.currentNote.id;
-      api.delete(id, (res) => {
-        console.log('delete success');
-        store.notes = store.notes.filter( note => note.id !== id);
-        store.currentNote = false;
-        api.search(store.currentSearchTerm).then(updateResponse => {
-          store.notes = updateResponse;
+  function handleDeleteItem() {
+    $('.js-notes-list').on('click', '.js-note-delete-button', function () {
+      const id = $(this).parent().attr('data-id');
+
+      api.delete(id)
+        .then(() => {
+          return api.search(store.currentSearchTerm);
+        })
+        .then(res => {
+          store.notes = res;
           render();
-      });
-      });
+        });
     });
   }
 
